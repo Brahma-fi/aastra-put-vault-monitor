@@ -25,22 +25,42 @@ func main(){
 
 	utils.LogInfo("Connected to infura node")
 	
-	contractAddress := common.HexToAddress(utils.GetEnvVar("AASTRA_VAULT_ADDRESS"))
-	query := ethereum.FilterQuery{
+	vaultAddress := common.HexToAddress(utils.GetEnvVar("AASTRA_VAULT_ADDRESS"))
+	vaultEventsQuery := ethereum.FilterQuery{
 		FromBlock: big.NewInt(13371034),
 		ToBlock: big.NewInt(13396011),
-		Addresses: []common.Address{contractAddress},
+		Addresses: []common.Address{vaultAddress},
 	}
 
-	logs, err := client.FilterLogs(context.Background(), query)
-	utils.CheckError(err, "Could not retrieve logs")
+	vaultLogs, err := client.FilterLogs(context.Background(), vaultEventsQuery)
+	utils.CheckError(err, "Could not retrieve vault logs")
 
-	utils.LogInfo("Loaded contract and retrieved logs")
+	utils.LogInfo("Loaded Vault contract and retrieved logs")
 
 	_, err = abi.JSON(strings.NewReader(string(AastraVault.AastraVaultABI)))
 	utils.CheckError(err, "Could not read contract ABI")
 
-	for _, vLog := range logs {
-		log.Println(vLog.Topics[0].Hex())
+	for _, vLog := range vaultLogs {
+		if vLog.Topics[0].Hex() == utils.Events.CompoundFee {
+			log.Println("CompoundFee")
+		}
+	}
+
+	routerAddress := common.HexToAddress(utils.GetEnvVar("ROUTER_ADDRESS"))
+	routerEventsQuery := ethereum.FilterQuery{
+		FromBlock: big.NewInt(13371034),
+		ToBlock: big.NewInt(13396011),
+		Addresses: []common.Address{routerAddress},
+	}
+
+	routerLogs, err := client.FilterLogs(context.Background(), routerEventsQuery)
+	utils.CheckError(err, "Could not retrieve router logs")
+
+	utils.LogInfo("Loaded Router contract and retrieved logs")
+
+	for _, vLog := range routerLogs {
+		if vLog.Topics[0].Hex() == utils.Events.Rebalance {
+			log.Println("Rebalance")
+		}
 	}
 }
