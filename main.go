@@ -12,6 +12,7 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/joho/godotenv"
 
+	AastraRouter "github.com/pradeep-selva/aastra-put-vault-monitor/generated/aastra-router"
 	AastraVault "github.com/pradeep-selva/aastra-put-vault-monitor/generated/aastra-vault"
 	"github.com/pradeep-selva/aastra-put-vault-monitor/utils"
 )
@@ -44,7 +45,21 @@ func readAndProcessLogs(
 
 	utils.LogInfo("Loaded contract and retrieved logs")
 
-	_, err = abi.JSON(strings.NewReader(string(AastraVault.AastraVaultABI)))
+	var contractABI abi.ABI
+
+	if envVarName == "AASTRA_VAULT_ADDRESS" {
+		contractABI, err = abi.JSON(strings.NewReader(
+			string(AastraVault.AastraVaultABI),
+		))
+	} else {
+		contractABI, err = abi.JSON(strings.NewReader(
+			string(AastraRouter.AastraRouterABI),
+		))
+	}
+
+	//temp -- remove during integration
+	_ = contractABI
+
 	utils.CheckError(err, "Could not read contract ABI")
 
 	for _, vLog := range logs {
