@@ -16,7 +16,7 @@ func CreateTable() {
 	db, err := sql.Open("mysql", utils.GetDbURI())
 	utils.CheckError(err, "Could not connect to db")
 	
-	ETHPUT_ACTIVITY_TABLE_COMMAND := "create table ethput_activity(timeStamp datetime, blockNumber float, activityType varchar(255), txnHash varchar(255))"
+	ETHPUT_ACTIVITY_TABLE_COMMAND := "create table ethput_activity(timeStamp datetime, blockNumber float, activityType varchar(255), txnHash varchar(255) primary key)"
 	_,err = db.Exec(ETHPUT_ACTIVITY_TABLE_COMMAND)
 	utils.CheckError(err, "Could not create table: ethput_activity")
 
