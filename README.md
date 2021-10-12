@@ -18,10 +18,10 @@ docker run -e AASTRA_VAULT_ADDRESS='<vault address>' \
 -e INFURA_ENDPOINT='<infura endpoint>' \
 -e MIGRATE='<migrate>' \
 -e DB_USERNAME='<username>' \
--e DB_PASSWORD='<password>'
--e DB_ENDPOINT='<endpoint>'
--e DB_PORT='<port>'
--e DB_NAME='<db name>'
+-e DB_PASSWORD='<password>' \
+-e DB_ENDPOINT='<endpoint>' \
+-e DB_PORT='<port>' \
+-e DB_NAME='<db name> -i <image>'
 ```
 
-- Set `MIGRATION` to true to create DBs before running script.
+- Set `MIGRATION` to `true` to create DBs before running script.
