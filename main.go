@@ -16,9 +16,8 @@ import (
 	"github.com/pradeep-selva/aastra-put-vault-monitor/utils"
 )
 
-const MIGRATE = false
 const TIME_FOR_ONE_BLOCK = 13
-const TIME_RANGE = 10 * 24 * 60 * 60
+const TIME_RANGE = (20 * 24 * 60 * 60) + (2*60*60)
 
 var db *sql.DB
 
@@ -68,13 +67,13 @@ func readAndProcessLogs(
 }
 
 func main() {
-	if MIGRATE {
-		migrations.CreateTable()
-	}
-
 	// load .env
 	err := godotenv.Load(".env")
 	utils.CheckError(err, "Could not load .env")
+
+	if utils.GetEnvVar("MIGRATE") == "true" {
+		migrations.CreateTable()
+	}
 
 	// connect to brahmafi db 
 	db, err = sql.Open("mysql", utils.GetDbURI())
