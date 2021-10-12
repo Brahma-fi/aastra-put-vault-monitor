@@ -17,7 +17,7 @@ import (
 )
 
 const TIME_FOR_ONE_BLOCK = 13
-const TIME_RANGE = (20 * 24 * 60 * 60) + (2*60*60)
+const TIME_RANGE = 2 * 60 * 60
 
 var db *sql.DB
 
@@ -58,10 +58,12 @@ func readAndProcessLogs(
 				vLog.TxHash.Hex(),
 			)
 			log.Println(INSERTION_COMMAND)
-			_,err = db.Exec(INSERTION_COMMAND)
-			utils.CheckError(err, "Could not insert into db: "+vLog.TxHash.Hex())
+			_, err = db.Exec(INSERTION_COMMAND)
+			if err != nil {
+				log.Println("ERROR: Could not insert into db: " + vLog.TxHash.Hex())
+			}
 
-			utils.LogInfo("Successfully inserted into db: "+vLog.TxHash.Hex())
+			utils.LogInfo("Successfully inserted into db: " + vLog.TxHash.Hex())
 		}
 	}
 }
@@ -75,7 +77,7 @@ func main() {
 		migrations.CreateTable()
 	}
 
-	// connect to brahmafi db 
+	// connect to brahmafi db
 	db, err = sql.Open("mysql", utils.GetDbURI())
 	utils.CheckError(err, "Could not connect to db")
 
@@ -96,16 +98,16 @@ func main() {
 
 	readAndProcessLogs(
 		client,
-		"AASTRA_VAULT_ADDRESS",
-		utils.Events.CompoundFee,
-		BlockRange{olderBlock, currentBlock},
-		"compoundFee",
-	)
-	readAndProcessLogs(
-		client,
 		"ROUTER_ADDRESS",
 		utils.Events.Rebalance,
 		BlockRange{olderBlock, currentBlock},
 		"rebalance",
+	)
+	readAndProcessLogs(
+		client,
+		"AASTRA_VAULT_ADDRESS",
+		utils.Events.CompoundFee,
+		BlockRange{olderBlock, currentBlock},
+		"compoundFee",
 	)
 }
