@@ -95,6 +95,7 @@ func main() {
 	currentBlock := header.Number
 	// block from 2 hours ago
 	olderBlock := big.NewInt(0).Sub(currentBlock, big.NewInt(TIME_RANGE/TIME_FOR_ONE_BLOCK))
+	utils.LogInfo(fmt.Sprintf("Checking logs in block range: %s, %s", currentBlock.String(), olderBlock.String()))
 
 	readAndProcessLogs(
 		client,
