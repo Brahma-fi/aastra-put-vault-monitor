@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"math/big"
+	"os"
 
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/common"
@@ -110,4 +111,6 @@ func main() {
 		BlockRange{olderBlock, currentBlock},
 		"compoundFee",
 	)
+	
+	os.Exit(0)
 }
