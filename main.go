@@ -6,13 +6,11 @@ import (
 	"fmt"
 	"log"
 	"math/big"
-	"os"
-
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/joho/godotenv"
-
+	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/pradeep-selva/aastra-put-vault-monitor/migrations"
 	"github.com/pradeep-selva/aastra-put-vault-monitor/utils"
 )
@@ -69,7 +67,12 @@ func readAndProcessLogs(
 	}
 }
 
-func main() {
+func main(){
+	lambda.Start(update_logs)
+}
+
+
+func update_logs() (error) {
 	// load .env
 	err := godotenv.Load(".env")
 	utils.CheckError(err, "Could not load .env")
@@ -112,6 +115,6 @@ func main() {
 		BlockRange{olderBlock, currentBlock},
 		"compoundFee",
 	)
-	
-	os.Exit(0)
+
+	return nil
 }
